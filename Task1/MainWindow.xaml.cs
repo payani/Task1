@@ -39,8 +39,20 @@ namespace Task1
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            if (oTaskDefine != null)
+            {
+                oTaskDefine.Dispose();
+                StatusBlock.Text = "";
+            }
             oTaskDefine = new TaskDefine();
-            oTaskDefine.OnTaskComplete += (s, a) => StatusBlock.Dispatcher.Invoke(new Action(() => StatusBlock.Text += $"Task {a.Item1} completed in {a.Item2}.\n"));
+            try
+            {
+                oTaskDefine.OnTaskComplete += (s, a) => StatusBlock.Dispatcher.Invoke(new Action(() => StatusBlock.Text += $"Task {a.Item1} completed in {a.Item2}.\n"));
+            }
+            catch (TaskCanceledException)
+            {
+                //log the exception.
+            }
             //await oTaskDefine.StartTasks();
             for (int i = 0; i < 15; i++)
             {

@@ -18,3 +18,5 @@ whenever task list updated call to OnTaskListUpdate() and this method will wakeu
 for keeping organizer thread in sleep it will not use the CPU and CPU will free to do some other tasks.
 In Action method assume that it is doing some work,i put thread in sleep for random 500 to 1500 milliseconds cosidered as a work.
 after every task(Action) completed that thread will invoke a event OnTaskComplete.
+
+run Task1 project and click on Start operation it will create 15 tasks and after completing each task it will display on textblock.
