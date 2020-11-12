@@ -13,15 +13,17 @@ namespace Task1
         #region Public Fields
 
         public EventHandler<Tuple<int, int>> OnTaskComplete;
-        private bool isThreadKeepAlive;
-        private Thread PreviusThread;
-        private Thread TaskOrganiserThread;
 
         #endregion Public Fields
 
         #region Private Fields
 
+        private bool isOrganiserThreadInSleep;
+        private bool isThreadKeepAlive;
         private Random oRandom;
+        private Thread PreviusThread;
+        private Thread TaskOrganiserThread;
+        private Queue<int> TaskQueue;
 
         #endregion Private Fields
 
@@ -34,53 +36,24 @@ namespace Task1
             isThreadKeepAlive = true;
             TaskOrganiserThread = new Thread(TaskOrganiser);
             TaskOrganiserThread.Start();
-            OnTaskComplete += (s, a) => OnTaskUpdate();
+            OnTaskComplete += (s, a) => OnTaskListUpdate();
         }
 
         #endregion Public Constructors
 
         #region Public Methods
 
-        private Queue<int> TaskQueue;
-
         public void AddTask(int taskNo)
         {
             //ThreadPool.QueueUserWorkItem(Action2, taskNo);
             //new Thread(Action).Start(taskNo);
             TaskQueue.Enqueue(taskNo);
-            OnTaskUpdate();
+            OnTaskListUpdate();
         }
 
         #endregion Public Methods
 
         #region Private Methods
-
-        private bool disposedValue;
-
-        private bool isOrganiserThreadInSleep;
-
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    isThreadKeepAlive = false;
-                    OnTaskUpdate();
-                }
-
-                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-                // TODO: set large fields to null
-                disposedValue = true;
-            }
-        }
 
         private void Action(object taskNo)
         {
@@ -95,7 +68,7 @@ namespace Task1
             }
         }
 
-        private void OnTaskUpdate()
+        private void OnTaskListUpdate()
         {
             if (isOrganiserThreadInSleep)
             {
@@ -134,6 +107,35 @@ namespace Task1
             }
         }
 
+        #endregion Private Methods
+
+        #region IDispose Pattern
+
+        private bool disposedValue;
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    isThreadKeepAlive = false;
+                    OnTaskListUpdate();
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+                // TODO: set large fields to null
+                disposedValue = true;
+            }
+        }
+
         // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
         // ~TaskDefine()
         // {
@@ -141,6 +143,6 @@ namespace Task1
         //     Dispose(disposing: false);
         // }
 
-        #endregion Private Methods
+        #endregion IDispose Pattern
     }
 }
