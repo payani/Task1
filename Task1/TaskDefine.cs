@@ -43,10 +43,12 @@ namespace Task1
 
         #region Public Methods
 
+        /// <summary>
+        /// add new task
+        /// </summary>
+        /// <param name="taskNo"></param>
         public void AddTask(int taskNo)
         {
-            //ThreadPool.QueueUserWorkItem(Action2, taskNo);
-            //new Thread(Action).Start(taskNo);
             TaskQueue.Enqueue(taskNo);
             OnTaskListUpdate();
         }
@@ -55,6 +57,10 @@ namespace Task1
 
         #region Private Methods
 
+        /// <summary>
+        /// perform task
+        /// </summary>
+        /// <param name="taskNo"></param>
         private void Action(object taskNo)
         {
             int tTaskNo = (int)taskNo;
@@ -80,6 +86,7 @@ namespace Task1
             {
                 if (TaskQueue.Count > 0)
                 {
+                    //if previus thread not alive add new task.
                     if (PreviusThread == null || !PreviusThread.IsAlive)
                     {
                         int task = TaskQueue.Dequeue();
@@ -89,6 +96,7 @@ namespace Task1
 
                     try
                     {
+                        //there is no tasks in queue then sleep thread until new task come
                         if (TaskQueue.Count == 0)
                         {
                             isOrganiserThreadInSleep = true;
