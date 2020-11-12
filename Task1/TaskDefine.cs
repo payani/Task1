@@ -57,15 +57,12 @@ namespace Task1
 
         private void Action(object taskNo)
         {
-            lock (this)
-            {
-                int tTaskNo = (int)taskNo;
-                //performing some time consuming task action
-                int randTime = oRandom.Next(500, 1500);
-                Thread.Sleep(randTime);
-                //on task complete generate event.
-                OnTaskComplete?.Invoke(this, new Tuple<int, int>(tTaskNo, randTime));
-            }
+            int tTaskNo = (int)taskNo;
+            //performing some time consuming task action
+            int randTime = oRandom.Next(500, 1500);
+            Thread.Sleep(randTime);
+            //on task complete generate event.
+            OnTaskComplete?.Invoke(this, new Tuple<int, int>(tTaskNo, randTime));
         }
 
         private void OnTaskListUpdate()
